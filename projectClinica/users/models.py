@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
 # Create your models here.
 class Uf(models.Model):
     sigla = models.CharField(max_length=2)
@@ -90,7 +89,7 @@ class Consulta(models.Model):
     observacoes = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Consulta com {self.medico.nome} em {self.data_hora}'
+        return f'Consulta com {self.medico.usuario.nome} em {self.data_hora}'
 
 class Pagamento(models.Model):
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
