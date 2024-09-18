@@ -52,7 +52,7 @@ class Especialidade(models.Model):
         return self.nome
 
 class Medico(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, limit_choices_to={'tipo_usuario': 'medico'})
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     especialidade = models.ForeignKey(Especialidade, on_delete=models.CASCADE)
     crm = models.CharField(max_length=20)
 
@@ -60,16 +60,16 @@ class Medico(models.Model):
         return self.usuario.username
 
 class Atendente(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, limit_choices_to={'tipo_usuario': 'atendente'})
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.nome}'
+        return f'{self.usuario.nome}'
     
 class Gerente(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, limit_choices_to={'tipo_usuario': 'gerente'})
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.nome}'
+        return f'{self.usuario.nome}'
 
 class Paciente(models.Model):
     nome = models.CharField(max_length=100)
