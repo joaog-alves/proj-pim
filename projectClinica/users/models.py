@@ -99,3 +99,12 @@ class Pagamento(models.Model):
 
     def __str__(self):
         return f'Pagamento de {self.valor} para {self.paciente.nome}'
+    
+class CheckIn(models.Model):
+    consulta = models.ForeignKey(Consulta, on_delete=models.CASCADE)
+    data = models.DateField(auto_now=True)  
+    hora = models.TimeField(auto_now=True)  
+    observacoes = models.TextField(null=True, blank=True) 
+
+    def __str__(self):
+        return f'Check-in de {self.consulta.paciente.nome} para consulta em {self.data}'
