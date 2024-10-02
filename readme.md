@@ -1,4 +1,4 @@
-Clone este repositório : git clone https://github.com/joaog-alves/proj-pim.git
+Clone este repositório : git clone https://github.com/joaog-alves/proj-pim.git/n
 Crie um ambiente de desenvolvimento : python -m venv venv;
 Vá para o ambiente : venv\Scripts\activate;
 Instale as dependências : pip install -r requirements.txt;
