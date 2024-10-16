@@ -32,3 +32,11 @@ class PacienteForm(forms.ModelForm):
             'data_nascimento': 'Data de Nascimento',
             'endereco': 'Endereço',
         }
+
+class PagamentoForm(forms.ModelForm):
+    class Meta:
+        model = Pagamento
+        fields = ['paciente', 'consulta', 'valor', 'data_pagamento']
+        widgets = {
+            'data_pagamento': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
