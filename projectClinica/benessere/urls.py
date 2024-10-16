@@ -16,4 +16,8 @@ urlpatterns = [
     path('recepcao/pacientes/<int:paciente_id>/', views.recp_detalhes_paciente, name='recp_detalhes_paciente'),
     path('recepcao/pacientes/<int:paciente_id>/editar/', views.recp_editar_paciente, name='recp_editar_paciente'),  # URL para editar paciente
     path('mensagens/', views.lista_mensagens, name='recp_mensagens'),
+    path('pagamentos/', views.lista_pagamentos, name='lista_pagamentos'),
+    path('pagamentos/adicionar/', views.adicionar_pagamento, name='adicionar_pagamento'),
+    path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
+    path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
 ]
