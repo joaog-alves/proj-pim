@@ -1,0 +1,32 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Adicionar Consulta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Adicionar Nova Consulta</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="id_paciente">Paciente:</label>
+        {{ form.paciente }}
+        
+        <label for="id_medico">Médico:</label>
+        {{ form.medico }}
+        
+        <label for="id_data_hora">Data e Hora:</label>
+        {{ form.data_hora }}
+        
+        <label for="id_unidade_clinica">Unidade Clínica:</label>
+        {{ form.unidade_clinica }}
+        
+        <label for="id_observacoes">Observações:</label>
+        {{ form.observacoes }}
+        
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'recp_consultas' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

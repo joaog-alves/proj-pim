@@ -1,0 +1,11 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block content %}
+  <h1>Editar Pagamento</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a href="{% url 'detalhes_pagamento' pagamento.id %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Detalhes do Paciente{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalhes do Paciente</h2>
+    <ul>
+        <li><strong>Nome:</strong> {{ paciente.nome }}</li>
+        <li><strong>CPF:</strong> {{ paciente.cpf }}</li>
+        <li><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento|date:"d/m/Y" }}</li>
+        <li><strong>Endereço:</strong> {{ paciente.endereco }}</li>
+        <li><strong>Email:</strong> {{ paciente.email }}</li>
+        <li><strong>Telefone:</strong> {{ paciente.telefone }}</li>
+    </ul>
+    
+    <h3>Consultas Marcadas</h3>
+    {% if consultas %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Médico</th>
+                    <th>Data e Hora</th>
+                    <th>Unidade Clínica</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>{{ consulta.medico.usuario.username }}</td>
+                    <td>{{ consulta.data_hora|date:"d/m/Y H:i" }}</td>
+                    <td>{{ consulta.unidade_clinica.nome }}</td>
+                    <td>
+                        <a href="{% url 'recp_detalhes_consulta' consulta.id %}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Não há consultas marcadas para este paciente.</p>
+    {% endif %}
+
+    <div class="btn-container mt-3">
+        <a href="{% url 'recp_pacientes' %}" class="btn btn-secondary">Voltar</a>
+        <a href="{% url 'recp_editar_paciente' paciente.id %}" class="btn btn-warning">Editar</a>
+    </div>
+</div>
+{% endblock %}

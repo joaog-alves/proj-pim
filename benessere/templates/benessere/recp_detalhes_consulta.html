@@ -1,0 +1,25 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Detalhes da Consulta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalhes da Consulta</h2>
+    <ul>
+        <li><strong>Paciente:</strong> {{ consulta.paciente.nome }}</li>
+        <li><strong>Médico:</strong> {{ consulta.medico.usuario.username }}</li>
+        <li><strong>Data e Hora:</strong> {{ consulta.data_hora|date:"d/m/Y H:i" }}</li>
+        <li><strong>Unidade Clínica:</strong> {{ consulta.unidade_clinica.nome }}</li>
+        <li><strong>Observações:</strong> {{ consulta.observacoes }}</li>
+    </ul>
+    <div class="btn-container">
+        <a href="{% url 'recp_consultas' %}" class="btn btn-secondary">Voltar</a>
+        <a href="{% url 'recp_editar_consulta' consulta.id %}" class="btn btn-warning">Editar</a>
+        {% if checkin_exists %}
+            <a href="{% url 'desfazer_checkin' consulta.id %}" class="btn btn-danger">Desfazer Check-In</a>
+        {% else %}
+            <a href="{% url 'checkin_consulta' consulta.id %}" class="btn btn-primary">Fazer Check-In</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
