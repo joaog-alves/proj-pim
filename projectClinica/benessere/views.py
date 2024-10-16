@@ -111,3 +111,34 @@ def recp_editar_paciente(request, paciente_id):
         form = PacienteForm(instance=paciente)
     return render(request, 'benessere/recp_editar_paciente.html', {'form': form, 'paciente': paciente})
 
+def lista_pagamentos(request):
+    pagamentos = Pagamento.objects.all()
+    return render(request, 'benessere/recp_pagamento.html', {'pagamentos': pagamentos})
+
+def detalhes_pagamento(request, pagamento_id):
+    pagamento = get_object_or_404(Pagamento, id=pagamento_id)
+    return render(request, 'benessere/recp_visualizar_pagamento.html', {'pagamento': pagamento})
+
+def adicionar_pagamento(request):
+    if request.method == 'POST':
+        form = PagamentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Pagamento adicionado com sucesso.')
+            return redirect('lista_pagamentos')
+    else:
+        form = PagamentoForm()
+    return render(request, 'benessere/recp_adicionar_pagamento.html', {'form': form})
+
+def editar_pagamento(request, pagamento_id):
+    pagamento = get_object_or_404(Pagamento, id=pagamento_id)
+    if request.method == 'POST':
+        form = PagamentoForm(request.POST, instance=pagamento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Pagamento atualizado com sucesso.')
+            return redirect('detalhes_pagamento', pagamento_id=pagamento.id)
+    else:
+        form = PagamentoForm(instance=pagamento)
+    return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
+
