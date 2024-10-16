@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
-from .forms import ConsultaForm, PacienteForm # Supondo que você tenha um formulário para consultas
+from .forms import ConsultaForm, PacienteForm, PagamentoForm 
 from django.contrib import messages
 
 def recp_lista_consultas(request):
