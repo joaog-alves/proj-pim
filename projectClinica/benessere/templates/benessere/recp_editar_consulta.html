@@ -1,0 +1,17 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Editar Consulta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Editar Consulta</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'recp_detalhes_consulta' consulta.id %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

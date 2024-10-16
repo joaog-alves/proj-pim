@@ -1,0 +1,17 @@
+<!-- templates/benessere/mensagens.html -->
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Mensagens{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Mensagens</h2>
+    <ul>
+        {% for mensagem in mensagens %}
+            <li>{{ mensagem }}</li>
+        {% empty %}
+            <li>Nenhuma mensagem encontrada.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

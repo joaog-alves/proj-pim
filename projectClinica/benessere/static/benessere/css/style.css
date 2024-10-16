@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.navbar {
+    background-color: #E4DED2; 
+    padding: 0; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5rem; /* Altura fixa */
+    z-index: 1000;
+}
+
+.logo-img {
+    padding-left: 4.6rem;
+    height: 4.5rem;
+    line-height: 60px; /* Centraliza verticalmente */
+}
+
+#logout-button {
+    background-color: #B6AFA1;
+    color: #B20505;
+    border-color: #B20505;
+    border-radius: 20px;
+    padding: 5px 20px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+#logout-button:hover {
+    background-color: #B20505;
+    color: #B6AFA1;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px; /* Começa logo abaixo do header */
+    left: 0; 
+    width: 250px;
+    height: calc(100vh - 60px); /* Ajusta a altura com base no header */
+    background-color: #D9D9D9; 
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .nav-link {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #333;
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #E4DED2;
+    color: #333;
+}
+
+.sidebar-user-info {
+    margin-top: auto;
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+.user-photo {
+    width: 80px; 
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+.user-name {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Conteúdo Principal */
+#page-content-wrapper {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+/* Estilização de Formulários */
+form label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+}
+
+form input, form select, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form .btn-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background-color: #B6AFA1;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #a89c8e;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+/* Tabelas */
+.table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Botão de Ação Customizado */
+.btn-custom {
+    background-color: #8cbf9f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: bold;
+}
+
+.btn-custom:hover {
+    background-color: #78b089;
+}
+
+/* Mensagens */
+.message-bubble {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+/* Botão Chamar Próxima Senha */
+.btn-next {
+    background-color: #8cbf9f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+.btn-next:hover {
+    background-color: #78b089;
+}
+
+#page-content-wrapper {
+    margin-left: 250px;
+    padding-top: 80px; /* Espaço extra para o header */
+    padding-left: 20px;
+    padding-right: 20px;
+}

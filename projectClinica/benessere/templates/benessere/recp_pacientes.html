@@ -1,0 +1,49 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Pacientes{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Pacientes</h2>
+    
+    <!-- Barra de Pesquisa e Filtros 
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <input type="text" class="form-control d-inline-block" placeholder="Pesquisar" style="width: 200px;">
+            <select class="form-select d-inline-block" style="width: 150px;">
+                <option selected>Filtros</option>
+                 Adicione opções de filtros aqui 
+                <option value="cpf">CPF</option>
+                <option value="nome">Nome</option>
+            </select>
+        </div>
+        <a href="{% url 'recp_adicionar_paciente' %}" class="btn btn-success">Adicionar paciente</a>
+    </div> -->
+
+    <!-- Tabela de Pacientes -->
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>CPF</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.nome }}</td>
+                <td>{{ paciente.cpf }}</td>
+                <td>
+                    <a href="{% url 'recp_detalhes_paciente' paciente.id %}" class="btn btn-primary btn-sm">Acessar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">Nenhum paciente encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
