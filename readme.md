@@ -7,3 +7,5 @@ Crie a base de dados : python manage.py migrate
 Crie um super usuario: python manage.py createsuperuser
 Suba o servidor : python manage.py runserver
 Acesse o site em 127.0.0.1:8000/recepcao/consultas
+Suba o servidor : python manage.py runserver
+Acesse o site em 127.0.0.1:8000/pagamentos
