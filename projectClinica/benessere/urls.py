@@ -24,4 +24,8 @@ urlpatterns = [
     path('medico/mensagens/', views.med_mensagens, name='med_mensagens'),  
     path('medico/consultas/<int:consulta_id>/', views.med_detalhes_consulta, name='med_detalhes_consulta'),
     path('mensagens/', views.lista_mensagens, name='recp_mensagens'),
+    path('pagamentos/', views.lista_pagamentos, name='lista_pagamentos'),
+    path('pagamentos/adicionar/', views.adicionar_pagamento, name='adicionar_pagamento'),
+    path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
+    path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
 ]
