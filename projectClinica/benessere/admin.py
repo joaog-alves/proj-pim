@@ -1,6 +1,6 @@
 # benessere/admin.py
 from django.contrib import admin
-from .models import Uf, Cidade, UnidadeClinica, Especialidade, Medico, Atendente, Gerente, Paciente, Consulta, Pagamento, CheckIn
+from .models import *
 
 @admin.register(Uf)
 class UfAdmin(admin.ModelAdmin):
@@ -30,8 +30,8 @@ class MedicoAdmin(admin.ModelAdmin):
     search_fields = ('usuario__username', 'crm')
     list_filter = ('especialidade',)
 
-@admin.register(Atendente)
-class AtendenteAdmin(admin.ModelAdmin):
+@admin.register(Recepcionista)
+class RecepcionistaAdmin(admin.ModelAdmin):
     list_display = ('usuario',)
     search_fields = ('usuario__username',)
 

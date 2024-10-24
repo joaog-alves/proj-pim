@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Uf(models.Model):
     sigla = models.CharField(max_length=2)
     nome = models.CharField(max_length=40)
@@ -31,21 +32,22 @@ class Especialidade(models.Model):
         return self.nome
 
 class Medico(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)  # Agora usando User
     especialidade = models.ForeignKey(Especialidade, on_delete=models.CASCADE)
     crm = models.CharField(max_length=20)
 
     def __str__(self):
         return self.usuario.username
 
-class Atendente(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+class Recepcionista(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)  # Agora usando User
 
     def __str__(self):
         return self.usuario.username
 
+
 class Gerente(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)  
 
     def __str__(self):
         return self.usuario.username

@@ -1,0 +1,43 @@
+<!-- templates/benessere/med-consultas.html -->
+{% extends 'benessere/med-base.html' %}
+{% load static %}
+
+{% block title %}Consultas do Médico - Benessere{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Consultas Agendadas</h3>
+    </div>
+    <div class="card-body">
+        {% if consultas %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Unidade Clínica</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                        <tr>
+                            <td>{{ consulta.paciente.nome }}</td>
+                            <td>{{ consulta.data_hora|date:"d/m/Y" }}</td>
+                            <td>{{ consulta.data_hora|time:"H:i" }}</td>
+                            <td>{{ consulta.unidade_clinica.nome }}</td>
+                            <td>
+                                <a href="{% url 'med_detalhes_consulta' consulta.id %}" class="btn btn-info btn-sm">Visualizar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center">Nenhuma consulta agendada.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

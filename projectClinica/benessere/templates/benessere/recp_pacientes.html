@@ -5,20 +5,10 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Pacientes</h2>
-    
-    <!-- Barra de Pesquisa e Filtros 
+     
     <div class="d-flex justify-content-between mb-3">
-        <div>
-            <input type="text" class="form-control d-inline-block" placeholder="Pesquisar" style="width: 200px;">
-            <select class="form-select d-inline-block" style="width: 150px;">
-                <option selected>Filtros</option>
-                 Adicione opções de filtros aqui 
-                <option value="cpf">CPF</option>
-                <option value="nome">Nome</option>
-            </select>
-        </div>
         <a href="{% url 'recp_adicionar_paciente' %}" class="btn btn-success">Adicionar paciente</a>
-    </div> -->
+    </div>
 
     <!-- Tabela de Pacientes -->
     <table class="table table-bordered table-striped">

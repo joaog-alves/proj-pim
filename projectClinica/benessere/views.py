@@ -1,8 +1,36 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
-from .forms import ConsultaForm, PacienteForm # Supondo que você tenha um formulário para consultas
+from .forms import ConsultaForm, PacienteForm, CustomUserCreationForm# Supondo que você tenha um formulário para consultas
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from .decorators import group_required
+
+@login_required
+def login_redirect(request):
+    user = request.user
+    
+    # Verifica o grupo ao qual o usuário pertence e redireciona
+    if user.groups.filter(name="Medico").exists():
+        return redirect('med_consultas')
+    elif user.groups.filter(name="Gerente").exists():
+        return redirect('dashboard_gerente')
+    elif user.groups.filter(name="Recepcionista").exists():
+        return redirect('recp_consultas')
+    else:
+        return redirect('login')
+
+def criar_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redireciona para a página de login após criar o usuário
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'benessere/criar_usuario.html', {'form': form})
 
 def recp_lista_consultas(request):
     consultas = Consulta.objects.all()
@@ -89,13 +117,12 @@ def recp_detalhes_paciente(request, paciente_id):
         'consultas': consultas
     })
 
-
 def recp_adicionar_paciente(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('pacientes')
+            return redirect('recp_pacientes')
     else:
         form = PacienteForm()
     return render(request, 'benessere/recp_adicionar_paciente.html', {'form': form})
@@ -111,3 +138,20 @@ def recp_editar_paciente(request, paciente_id):
         form = PacienteForm(instance=paciente)
     return render(request, 'benessere/recp_editar_paciente.html', {'form': form, 'paciente': paciente})
 
+@group_required('Medico')
+def med_consultas(request):
+    # Filtra as consultas apenas para o médico logado
+    consultas = Consulta.objects.filter(medico__usuario=request.user)
+    return render(request, 'benessere/med-consultas.html', {'consultas': consultas})
+
+@group_required('Medico')
+def med_mensagens(request):
+    # Lógica para exibir as mensagens do médico
+    return render(request, 'benessere/med-mensagens.html')
+
+@group_required('Medico')
+def med_detalhes_consulta(request, consulta_id):
+    # Carrega os detalhes da consulta específica
+    consulta = get_object_or_404(Consulta, id=consulta_id)
+    
+    return render(request, 'benessere/med-detalhes-consulta.html', {'consulta': consulta})

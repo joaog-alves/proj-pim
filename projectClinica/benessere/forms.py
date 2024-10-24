@@ -1,6 +1,33 @@
 # benessere/forms.py
 from django import forms
 from .models import *
+from django.contrib.auth.models import User, Group
+
+class CustomUserCreationForm(forms.ModelForm):
+    USER_TYPE_CHOICES = [
+        ('Medico', 'Médico'),
+        ('Gerente', 'Gerente'),
+        ('Recepcionista', 'Recepcionista'),
+    ]
+
+    tipo_usuario = forms.ChoiceField(choices=USER_TYPE_CHOICES)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email', 'tipo_usuario']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        
+        if commit:
+            user.save()
+            # Adiciona o usuário ao grupo baseado no tipo selecionado
+            group_name = self.cleaned_data['tipo_usuario']
+            group = Group.objects.get(name=group_name)
+            user.groups.add(group)
+        
+        return user
 
 class ConsultaForm(forms.ModelForm):
     class Meta:

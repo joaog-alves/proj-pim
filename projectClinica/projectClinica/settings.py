@@ -52,7 +52,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'projectClinica.urls'
 
-LOGOUT_REDIRECT_URL = '/login/' 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'login_redirect'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+#AUTH_USER_MODEL = 'benessere.Usuario'  
 
 TEMPLATES = [
     {

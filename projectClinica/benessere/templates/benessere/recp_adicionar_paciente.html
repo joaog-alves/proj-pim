@@ -1,0 +1,17 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Editar Paciente{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Adicionar Paciente</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'recp_adicionar_paciente' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
