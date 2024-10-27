@@ -1,0 +1,29 @@
+{% extends 'benessere/gestor_base.html' %}
+{% block content %}
+  <h1>Usuários Cadastrados</h1>
+  <a href="{% url 'gestor_adicionar_usuario' %}" class="btn btn-primary">Adicionar Usuário</a>
+  <table>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Tipo</th>
+      <th>Ações</th>
+    </tr>
+    {% for usuario in usuarios %}
+    <tr>
+      <td>{{ usuario.username }}</td>
+      <td>{{ usuario.email }}</td>
+      <td>
+        {% if usuario.groups.all %}
+          {{ usuario.groups.all.0.name }}
+        {% else %}
+          Não definido
+        {% endif %}
+      </td>
+      <td>
+        <a href="{% url 'gestor_detalhes_usuario' usuario.id %}">Detalhes</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

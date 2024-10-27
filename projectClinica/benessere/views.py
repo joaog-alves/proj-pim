@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from .decorators import group_required
+from django.contrib.auth.decorators import user_passes_test
 
 @login_required
 def login_redirect(request):
@@ -187,3 +188,40 @@ def editar_pagamento(request, pagamento_id):
     else:
         form = PagamentoForm(instance=pagamento)
     return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
+
+# Verifica se o usuário é gestor
+def is_gestor(user):
+    return user.groups.filter(name='Gerente').exists()
+
+@user_passes_test(is_gestor)
+def gestor_lista_usuarios(request):
+    usuarios = User.objects.all()
+    return render(request, 'benessere/gestor_usuarios.html', {'usuarios': usuarios})
+
+@user_passes_test(is_gestor)
+def gestor_adicionar_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gestor_usuarios')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'benessere/gestor_adicionar_usuario.html', {'form': form})
+
+@user_passes_test(is_gestor)
+def gestor_detalhes_usuario(request, usuario_id):
+    usuario = get_object_or_404(User, id=usuario_id)
+    return render(request, 'benessere/gestor_detalhes_usuario.html', {'usuario': usuario})
+
+@user_passes_test(is_gestor)
+def criar_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gestor_usuarios')  # Redireciona para a lista de usuários do gestor
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'benessere/criar_usuario.html', {'form': form})

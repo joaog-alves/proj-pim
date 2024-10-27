@@ -1,0 +1,9 @@
+{% extends 'benessere/gestor_base.html' %}
+{% block content %}
+  <h1>Adicionar Novo Usuário</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </form>
+{% endblock %}

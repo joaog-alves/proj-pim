@@ -1,8 +1,8 @@
 # benessere/urls.py
-from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views
+from django.urls import path
 
+from . import views
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='benessere/login.html'), name='login'),
@@ -28,4 +28,7 @@ urlpatterns = [
     path('pagamentos/adicionar/', views.adicionar_pagamento, name='adicionar_pagamento'),
     path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
     path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
+    path('gestor/usuarios/', views.gestor_lista_usuarios, name='gestor_usuarios'),
+    path('gestor/usuarios/adicionar/', views.gestor_adicionar_usuario, name='gestor_adicionar_usuario'),
+    path('gestor/usuarios/<int:usuario_id>/', views.gestor_detalhes_usuario, name='gestor_detalhes_usuario'),
 ]

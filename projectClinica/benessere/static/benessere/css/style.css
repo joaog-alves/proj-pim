@@ -4,6 +4,7 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/* Navbar */
 .navbar {
     background-color: #E4DED2; 
     padding: 0; 
@@ -85,7 +86,9 @@ body {
 /* Conteúdo Principal */
 #page-content-wrapper {
     margin-left: 250px;
-    padding: 20px;
+    padding-top: 80px; /* Espaço extra para o header */
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* Estilização de Formulários */
@@ -190,9 +193,85 @@ form .btn-container {
     background-color: #78b089;
 }
 
-#page-content-wrapper {
-    margin-left: 250px;
-    padding-top: 80px; /* Espaço extra para o header */
-    padding-left: 20px;
-    padding-right: 20px;
+/* Página de Login */
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5; /* Fundo suave */
+    margin: 0;
 }
+
+/* Contêiner do Formulário de Login */
+.login-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Logo acima do Formulário */
+.login-container img {
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+/* Título do Formulário */
+.login-container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #555555;
+}
+
+/* Campos de Entrada */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Botão de Entrar */
+.login-container button {
+    background-color: #B6AFA1;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.login-container button:hover {
+    background-color: #a89c8e;
+}
+
+/* Botão de Criar Novo Usuário */
+.login-container .btn-create-user {
+    padding: 10px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-weight: bold;
+}
+
+.login-container .btn-create-user:hover {
+    background-color: #5a6268;
+}
+
