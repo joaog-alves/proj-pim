@@ -1,0 +1,12 @@
+<!-- templates/benessere/gestor_adicionar_unidade.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block content %}
+    <h3>{% if unidade %}Editar Unidade Clínica{% else %}Adicionar Unidade Clínica{% endif %}</h3>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renderiza o formulário com os estilos definidos -->
+        <button type="submit" class="btn btn-primary mt-3">Salvar Unidade</button>
+    </form>
+{% endblock %}

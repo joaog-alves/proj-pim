@@ -2,7 +2,56 @@
 
 body {
     font-family: 'Inter', sans-serif;
+    background-color: #E9E3DA; /* Cor de fundo uniforme */
 }
+
+/* Ajuste para a tela de login */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-card {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 2rem;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.login-card button {
+    background-color: #B6AFA1;
+    border: none;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.login-card button:hover {
+    background-color: #a89c8e;
+}
+
+.imagem {
+    margin-bottom: 20px;
+}
+
 
 .navbar {
     background-color: #E4DED2; 

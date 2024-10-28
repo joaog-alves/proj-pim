@@ -1,0 +1,52 @@
+<!-- templates/benessere/gestor_dashboard.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block title %}Dashboard do Gestor - Benessere{% endblock %}
+
+{% block content %}
+<div >
+    <div class="card-header text-center">
+        <h3>Dashboard do Gestor</h3>
+    </div>
+    <div class="card-body">
+        <p class="text-center">Bem-vindo ao painel de controle do gestor. Aqui você pode gerenciar usuários e visualizar relatórios.</p>
+        
+        <!-- Botão para adicionar novo usuário -->
+        <div class="text-center mb-4">
+            <a href="{% url 'gestor_criar_usuario' %}" class="btn btn-success">Adicionar Novo Usuário</a>
+        </div>
+
+        <!-- Tabela de usuários cadastrados -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nome de Usuário</th>
+                    <th>Email</th>
+                    <th>Função (Grupo)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in usuarios %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.groups.all %}
+                                {{ user.groups.all|join:", " }}
+                            {% else %}
+                                Sem Grupo
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Botões de Editar e Deletar -->
+                            <a href="{% url 'gestor_editar_usuario' user.id %}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{% url 'gestor_deletar_usuario' user.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

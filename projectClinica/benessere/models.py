@@ -46,7 +46,7 @@ class Recepcionista(models.Model):
         return self.usuario.username
 
 
-class Gerente(models.Model):
+class Gestor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)  
 
     def __str__(self):

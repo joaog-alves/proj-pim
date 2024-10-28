@@ -1,0 +1,12 @@
+<!-- templates/benessere/gestor_editar_unidade.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block content %}
+    <h3>Editar Unidade Clínica</h3>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renderiza o formulário com os estilos definidos -->
+        <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+    </form>
+{% endblock %}

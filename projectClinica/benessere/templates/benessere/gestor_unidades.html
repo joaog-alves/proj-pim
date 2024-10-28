@@ -1,0 +1,36 @@
+<!-- templates/benessere/gestor_mostrar_unidades.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block content %}
+    <h3>Unidades Clínicas</h3>
+
+    <div class="mb-3">
+        <a href="{% url 'gestor_adicionar_unidade' %}" class="btn btn-success">Adicionar Nova Unidade</a>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cidade</th>
+                <th>Endereço</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unidade in unidades %}
+            <tr>
+                <td>{{ unidade.nome }}</td>
+                <td>{{ unidade.cidade.nome }}</td>
+                <td>{{ unidade.endereco }}</td>
+                <td>{{ unidade.telefone }}</td>
+                <td>
+                    <a href="{% url 'gestor_editar_unidade' unidade.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'gestor_deletar_unidade' unidade.id %}" class="btn btn-danger btn-sm">Deletar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

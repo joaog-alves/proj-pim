@@ -1,12 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
-from .forms import ConsultaForm, PacienteForm, CustomUserCreationForm# Supondo que você tenha um formulário para consultas
-from .forms import ConsultaForm, PacienteForm, PagamentoForm 
+from .forms import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from .decorators import group_required
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.models import User, Group
+
+
 
 @login_required
 def login_redirect(request):
@@ -15,23 +17,12 @@ def login_redirect(request):
     # Verifica o grupo ao qual o usuário pertence e redireciona
     if user.groups.filter(name="Medico").exists():
         return redirect('med_consultas')
-    elif user.groups.filter(name="Gerente").exists():
-        return redirect('dashboard_gerente')
+    elif user.groups.filter(name="Gestor").exists():
+        return redirect('gestor_dashboard')
     elif user.groups.filter(name="Recepcionista").exists():
         return redirect('recp_consultas')
     else:
         return redirect('login')
-
-def criar_usuario(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # Redireciona para a página de login após criar o usuário
-    else:
-        form = CustomUserCreationForm()
-
-    return render(request, 'benessere/criar_usuario.html', {'form': form})
 
 def recp_lista_consultas(request):
     consultas = Consulta.objects.all()
@@ -187,3 +178,129 @@ def editar_pagamento(request, pagamento_id):
     else:
         form = PagamentoForm(instance=pagamento)
     return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
+
+@group_required('Gestor')
+def gestor_dashboard(request):
+    if not request.user.is_authenticated or not request.user.groups.filter(name='Gestor').exists():
+        return render(request, '403.html', status=403)
+
+    # Obter todos os usuários cadastrados
+    usuarios = User.objects.all()
+    
+    return render(request, 'benessere/gestor_dashboard.html', {'usuarios': usuarios})
+
+
+def gestor_criar_usuario(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            groups = form.cleaned_data['groups']
+            
+            # Adicionar o usuário aos grupos selecionados
+            user.groups.set(groups)
+            user.save()
+
+            # Verificar se o usuário é médico e criar o modelo Medico
+            if any(group.name == "Medico" for group in groups):
+                especialidade = form.cleaned_data['especialidade']
+                crm = form.cleaned_data['crm']
+                Medico.objects.create(usuario=user, especialidade=especialidade, crm=crm)
+
+            # Redirecionar para o dashboard após a criação do usuário
+            return redirect('gestor_dashboard')
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'benessere/gestor_criar_usuario.html', {'form': form})
+
+def gestor_editar_usuario(request, user_id):
+    usuario = get_object_or_404(User, pk=user_id)
+    grupos = Group.objects.filter(name__in=["Medico", "Gestor", "Recepcionista"])
+
+    if request.method == "POST":
+        # Atualiza os dados do usuário
+        usuario.username = request.POST.get('username')
+        usuario.email = request.POST.get('email')
+
+        # Atualiza o grupo
+        grupo_id = request.POST.get('groups')
+        if grupo_id:
+            grupo = Group.objects.get(pk=grupo_id)
+            usuario.groups.clear()  # Limpa grupos anteriores
+            usuario.groups.add(grupo)  # Adiciona o novo grupo
+
+        usuario.save()
+        return redirect('gestor_dashboard')
+
+    return render(request, 'benessere/gestor_editar_usuario.html', {
+        'usuario': usuario,
+        'grupos': grupos,
+    })
+
+def gestor_deletar_usuario(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('gestor_dashboard')
+    
+    return render(request, 'benessere/gestor_confirmar_delecao.html', {'user': user})
+
+def gestor_unidades(request):
+    ufs = Uf.objects.all()
+    cidades = Cidade.objects.select_related('uf').all()
+    unidades = UnidadeClinica.objects.select_related('cidade', 'cidade__uf').all()
+    
+    context = {
+        'ufs': ufs,
+        'cidades': cidades,
+        'unidades': unidades,
+    }
+
+    return render(request, 'benessere/gestor_unidades.html', context)
+
+def gestor_adicionar_unidade(request):
+    if request.method == 'POST':
+        form = UnidadeClinicaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gestor_unidades')  # Redireciona para a página com a lista de unidades
+    else:
+        form = UnidadeClinicaForm()
+    
+    return render(request, 'benessere/gestor_adicionar_unidade.html', {'form': form})
+
+def gestor_adicionar_unidade(request):
+    if request.method == 'POST':
+        form = UnidadeClinicaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gestor_unidades')  # Redireciona para a lista de unidades
+    else:
+        form = UnidadeClinicaForm()
+    
+    return render(request, 'benessere/gestor_adicionar_unidade.html', {'form': form})
+
+def gestor_editar_unidade(request, unidade_id):
+    # Recupera a unidade clínica a ser editada
+    unidade = get_object_or_404(UnidadeClinica, id=unidade_id)
+
+    if request.method == 'POST':
+        form = UnidadeClinicaForm(request.POST, instance=unidade)
+        if form.is_valid():
+            form.save()
+            return redirect('gestor_unidades')  # Redireciona para a página com a lista de unidades
+    else:
+        # Preenche o formulário com os dados da unidade existente
+        form = UnidadeClinicaForm(instance=unidade)
+    
+    return render(request, 'benessere/gestor_editar_unidade.html', {'form': form, 'unidade': unidade})
+
+def gestor_deletar_unidade(request, unidade_id):
+    unidade = get_object_or_404(UnidadeClinica, id=unidade_id)
+    
+    if request.method == 'POST':
+        unidade.delete()
+        return redirect('gestor_unidades')  # Redireciona para a lista de unidades após a exclusão
+    
+    return render(request, 'benessere/gestor_confirmar_deletar_unidade.html', {'unidade': unidade})

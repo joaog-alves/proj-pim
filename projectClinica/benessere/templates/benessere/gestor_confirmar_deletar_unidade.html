@@ -1,0 +1,13 @@
+<!-- templates/benessere/gestor_confirmar_deletar_unidade.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block content %}
+    <h3>Deletar Unidade Clínica</h3>
+    <p>Você tem certeza que deseja deletar a unidade <strong>{{ unidade.nome }}</strong> localizada em {{ unidade.cidade.nome }}?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Deletar</button>
+        <a href="{% url 'gestor_unidades' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

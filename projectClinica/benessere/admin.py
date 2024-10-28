@@ -1,7 +1,35 @@
 # benessere/admin.py
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .forms import *
 from .models import *
 
+# Personalização da exibição de usuário no admin
+class CustomUserAdmin(BaseUserAdmin):
+    add_form = UserCreationForm
+
+    # Configura o que será exibido no formulário de criação de usuário
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'groups'),  # Exibe o campo de grupos após as senhas
+        }),
+    )
+
+    # Configuração para editar os usuários
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Informações Pessoais', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups')}),
+        ('Datas Importantes', {'fields': ('last_login', 'date_joined')}),
+    )
+
+# Registre o UserAdmin personalizado
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
+
+# Registro dos modelos do benessere
 @admin.register(Uf)
 class UfAdmin(admin.ModelAdmin):
     list_display = ('sigla', 'nome')
@@ -35,8 +63,8 @@ class RecepcionistaAdmin(admin.ModelAdmin):
     list_display = ('usuario',)
     search_fields = ('usuario__username',)
 
-@admin.register(Gerente)
-class GerenteAdmin(admin.ModelAdmin):
+@admin.register(Gestor)
+class GestorAdmin(admin.ModelAdmin):
     list_display = ('usuario',)
     search_fields = ('usuario__username',)
 

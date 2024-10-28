@@ -2,32 +2,41 @@
 from django import forms
 from .models import *
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.forms import UserCreationForm
 
-class CustomUserCreationForm(forms.ModelForm):
-    USER_TYPE_CHOICES = [
-        ('Medico', 'Médico'),
-        ('Gerente', 'Gerente'),
-        ('Recepcionista', 'Recepcionista'),
-    ]
+class CustomUserCreationForm(UserCreationForm):
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.filter(name__in=["Medico", "Gestor", "Recepcionista"]),
+        required=True,
+        widget=forms.CheckboxSelectMultiple,
+        label='Grupos'
+    )
 
-    tipo_usuario = forms.ChoiceField(choices=USER_TYPE_CHOICES)
+    # Campos adicionais para médicos
+    especialidade = forms.ModelChoiceField(
+        queryset=Especialidade.objects.all(),
+        required=False,
+        label='Especialidade'
+    )
+    crm = forms.CharField(max_length=20, required=False, label='CRM')
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'tipo_usuario']
+        fields = ['username', 'password1', 'password2', 'groups', 'especialidade', 'crm']
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+    def clean(self):
+        cleaned_data = super().clean()
+        groups = cleaned_data.get('groups')
+        especialidade = cleaned_data.get('especialidade')
+        crm = cleaned_data.get('crm')
+
+        # Verificar se o grupo Médico foi selecionado e se os campos necessários estão preenchidos
+        if any(group.name == "Medico" for group in groups):
+            if not especialidade or not crm:
+                raise forms.ValidationError("Para médicos, é necessário informar a especialidade e o CRM.")
         
-        if commit:
-            user.save()
-            # Adiciona o usuário ao grupo baseado no tipo selecionado
-            group_name = self.cleaned_data['tipo_usuario']
-            group = Group.objects.get(name=group_name)
-            user.groups.add(group)
-        
-        return user
+        return cleaned_data
+
 
 class ConsultaForm(forms.ModelForm):
     class Meta:
@@ -67,3 +76,51 @@ class PagamentoForm(forms.ModelForm):
         widgets = {
             'data_pagamento': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
+class UnidadeClinicaForm(forms.ModelForm):
+    # Campo para digitar o nome da cidade manualmente
+    cidade = forms.CharField(
+        max_length=40,
+        required=True,
+        label='Cidade',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        help_text='Digite o nome da cidade'
+    )
+
+    # Campo para selecionar a UF
+    uf = forms.ModelChoiceField(
+        queryset=Uf.objects.all(),
+        required=True,
+        label='UF',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = UnidadeClinica
+        fields = ['nome', 'endereco', 'telefone']
+        labels = {
+            'nome': 'Nome da Unidade',
+            'endereco': 'Endereço',
+            'telefone': 'Telefone',
+        }
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def save(self, commit=True):
+        unidade_clinica = super().save(commit=False)
+
+        # Recupera a UF selecionada e o nome da cidade digitado
+        uf = self.cleaned_data.get('uf')
+        cidade_nome = self.cleaned_data.get('cidade')
+
+        if cidade_nome and uf:
+            # Cria a nova cidade e a associa à unidade
+            cidade, created = Cidade.objects.get_or_create(nome=cidade_nome, uf=uf)
+            unidade_clinica.cidade = cidade
+
+        if commit:
+            unidade_clinica.save()
+        return unidade_clinica

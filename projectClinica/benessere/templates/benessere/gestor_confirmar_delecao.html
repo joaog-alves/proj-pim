@@ -1,0 +1,21 @@
+<!-- templates/benessere/gestor_confirmar_delecao.html -->
+{% extends 'benessere/gestor_base.html' %}
+
+{% block title %}Confirmar Exclusão - Benessere{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h2 class="mb-4">Excluir Usuário: {{ user.username }}</h2>
+            <p>Tem certeza que deseja excluir este usuário?</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Excluir</button>
+                <a href="{% url 'gestor_dashboard' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
