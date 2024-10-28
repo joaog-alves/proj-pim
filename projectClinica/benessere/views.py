@@ -5,7 +5,6 @@ from .forms import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import group_required
-from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import User, Group
 
 
@@ -24,10 +23,18 @@ def login_redirect(request):
     else:
         return redirect('login')
 
+@login_required
+def acesso_negado(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redireciona para o login se o usuário não estiver autenticado
+    return render(request, 'benessere/acesso_negado.html')
+
+@group_required("Recepcionista")
 def recp_lista_consultas(request):
     consultas = Consulta.objects.all()
     return render(request, 'benessere/recp_consultas.html', {'consultas': consultas})
 
+@group_required("Recepcionista")
 def recp_adicionar_consulta(request):
     if request.method == 'POST':
         form = ConsultaForm(request.POST)
@@ -39,7 +46,7 @@ def recp_adicionar_consulta(request):
 
     return render(request, 'benessere/recp_adicionar_consulta.html', {'form': form})
 
-
+@group_required("Recepcionista")
 def recp_detalhes_consulta(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     checkin_exists = CheckIn.objects.filter(consulta=consulta).exists()
@@ -49,6 +56,7 @@ def recp_detalhes_consulta(request, consulta_id):
         'checkin_exists': checkin_exists
     })
 
+@group_required("Recepcionista")
 def recp_editar_consulta(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     if request.method == 'POST':
@@ -59,13 +67,15 @@ def recp_editar_consulta(request, consulta_id):
     else:
         form = ConsultaForm(instance=consulta)
     return render(request, 'benessere/recp_editar_consulta.html', {'form': form, 'consulta': consulta}) 
-    
+
+@group_required("Recepcionista")    
 def remover_consulta(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     consulta.delete()
     messages.success(request, 'Consulta removida com sucesso.')
     return redirect('recp_consultas')
 
+@group_required("Recepcionista")
 def checkin_consulta(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     
@@ -79,6 +89,7 @@ def checkin_consulta(request, consulta_id):
     
     return redirect('recp_detalhes_consulta', consulta_id=consulta.id)
 
+@group_required("Recepcionista")
 def desfazer_checkin(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     checkin = CheckIn.objects.filter(consulta=consulta)
@@ -91,6 +102,7 @@ def desfazer_checkin(request, consulta_id):
     
     return redirect('recp_detalhes_consulta', consulta_id=consulta.id)
 
+@group_required("Recepcionista")
 def recp_lista_pacientes(request):
     pacientes = Paciente.objects.all()
     return render(request, 'benessere/recp_pacientes.html', {'pacientes': pacientes})
@@ -100,6 +112,7 @@ def lista_mensagens(request):
     mensagens = []  # Exemplo: substitua pelo queryset real, se houver
     return render(request, 'benessere/recp_mensagens.html', {'mensagens': mensagens})
 
+@group_required("Recepcionista")
 def recp_detalhes_paciente(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
     consultas = Consulta.objects.filter(paciente=paciente)  # Busca todas as consultas do paciente
@@ -109,6 +122,7 @@ def recp_detalhes_paciente(request, paciente_id):
         'consultas': consultas
     })
 
+@group_required("Recepcionista")
 def recp_adicionar_paciente(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
@@ -119,6 +133,7 @@ def recp_adicionar_paciente(request):
         form = PacienteForm()
     return render(request, 'benessere/recp_adicionar_paciente.html', {'form': form})
 
+@group_required("Recepcionista")
 def recp_editar_paciente(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
     if request.method == 'POST':
@@ -129,24 +144,6 @@ def recp_editar_paciente(request, paciente_id):
     else:
         form = PacienteForm(instance=paciente)
     return render(request, 'benessere/recp_editar_paciente.html', {'form': form, 'paciente': paciente})
-
-@group_required('Medico')
-def med_consultas(request):
-    # Filtra as consultas apenas para o médico logado
-    consultas = Consulta.objects.filter(medico__usuario=request.user)
-    return render(request, 'benessere/med-consultas.html', {'consultas': consultas})
-
-@group_required('Medico')
-def med_mensagens(request):
-    # Lógica para exibir as mensagens do médico
-    return render(request, 'benessere/med-mensagens.html')
-
-@group_required('Medico')
-def med_detalhes_consulta(request, consulta_id):
-    # Carrega os detalhes da consulta específica
-    consulta = get_object_or_404(Consulta, id=consulta_id)
-    
-    return render(request, 'benessere/med-detalhes-consulta.html', {'consulta': consulta})
 
 def lista_pagamentos(request):
     pagamentos = Pagamento.objects.all()
@@ -179,6 +176,29 @@ def editar_pagamento(request, pagamento_id):
         form = PagamentoForm(instance=pagamento)
     return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
 
+@group_required('Medico')
+def med_consultas(request):
+    # Filtra as consultas apenas para o médico logado
+    consultas = Consulta.objects.filter(medico__usuario=request.user)
+    return render(request, 'benessere/med-consultas.html', {'consultas': consultas})
+
+@group_required('Medico')
+def med_mensagens(request):
+    # Lógica para exibir as mensagens do médico
+    return render(request, 'benessere/med-mensagens.html')
+
+@group_required('Medico')
+def med_detalhes_consulta(request, consulta_id):
+    consulta = get_object_or_404(Consulta, pk=consulta_id)
+    
+    # Verifica se o check-in já foi realizado para essa consulta
+    checkin_exists = CheckIn.objects.filter(consulta=consulta).exists()
+
+    return render(request, 'benessere/med-detalhes-consulta.html', {
+        'consulta': consulta,
+        'checkin_exists': checkin_exists
+    })
+
 @group_required('Gestor')
 def gestor_dashboard(request):
     if not request.user.is_authenticated or not request.user.groups.filter(name='Gestor').exists():
@@ -189,7 +209,7 @@ def gestor_dashboard(request):
     
     return render(request, 'benessere/gestor_dashboard.html', {'usuarios': usuarios})
 
-
+@group_required('Gestor')
 def gestor_criar_usuario(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -214,6 +234,7 @@ def gestor_criar_usuario(request):
     
     return render(request, 'benessere/gestor_criar_usuario.html', {'form': form})
 
+@group_required('Gestor')
 def gestor_editar_usuario(request, user_id):
     usuario = get_object_or_404(User, pk=user_id)
     grupos = Group.objects.filter(name__in=["Medico", "Gestor", "Recepcionista"])
@@ -238,6 +259,7 @@ def gestor_editar_usuario(request, user_id):
         'grupos': grupos,
     })
 
+@group_required('Gestor')
 def gestor_deletar_usuario(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
@@ -246,6 +268,7 @@ def gestor_deletar_usuario(request, user_id):
     
     return render(request, 'benessere/gestor_confirmar_delecao.html', {'user': user})
 
+@group_required('Gestor')
 def gestor_unidades(request):
     ufs = Uf.objects.all()
     cidades = Cidade.objects.select_related('uf').all()
@@ -259,6 +282,7 @@ def gestor_unidades(request):
 
     return render(request, 'benessere/gestor_unidades.html', context)
 
+@group_required('Gestor')
 def gestor_adicionar_unidade(request):
     if request.method == 'POST':
         form = UnidadeClinicaForm(request.POST)
@@ -270,6 +294,7 @@ def gestor_adicionar_unidade(request):
     
     return render(request, 'benessere/gestor_adicionar_unidade.html', {'form': form})
 
+@group_required('Gestor')
 def gestor_adicionar_unidade(request):
     if request.method == 'POST':
         form = UnidadeClinicaForm(request.POST)
@@ -281,6 +306,7 @@ def gestor_adicionar_unidade(request):
     
     return render(request, 'benessere/gestor_adicionar_unidade.html', {'form': form})
 
+@group_required('Gestor')
 def gestor_editar_unidade(request, unidade_id):
     # Recupera a unidade clínica a ser editada
     unidade = get_object_or_404(UnidadeClinica, id=unidade_id)
@@ -296,6 +322,7 @@ def gestor_editar_unidade(request, unidade_id):
     
     return render(request, 'benessere/gestor_editar_unidade.html', {'form': form, 'unidade': unidade})
 
+@group_required('Gestor')
 def gestor_deletar_unidade(request, unidade_id):
     unidade = get_object_or_404(UnidadeClinica, id=unidade_id)
     

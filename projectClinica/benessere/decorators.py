@@ -1,5 +1,5 @@
-from django.core.exceptions import PermissionDenied
 from functools import wraps
+from django.shortcuts import redirect
 
 def group_required(group_name):
     def decorator(view_func):
@@ -10,11 +10,16 @@ def group_required(group_name):
             print(f"Nome do usuário: {request.user.username}")
             print(f"Grupos do usuário: {[group.name for group in request.user.groups.all()]}")  # Imprime os grupos do usuário
             
-            # Verifique se o usuário pertence ao grupo
-            if not request.user.groups.filter(name=group_name).exists():
-                print(f"Usuário {request.user.username} não pertence ao grupo {group_name}.")
-                raise PermissionDenied  # Erro 403 se não estiver no grupo
-            print(f"Usuário {request.user.username} pertence ao grupo {group_name}.")
-            return view_func(request, *args, **kwargs)
+            # Verifique se o usuário está autenticado e pertence ao grupo
+            if request.user.is_authenticated:
+                if request.user.groups.filter(name=group_name).exists():
+                    print(f"Usuário {request.user.username} pertence ao grupo {group_name}.")
+                    return view_func(request, *args, **kwargs)
+                else:
+                    print(f"Usuário {request.user.username} não pertence ao grupo {group_name}.")
+                    return redirect('acesso_negado')  # Redireciona para a página de acesso negado
+            else:
+                print("Usuário não autenticado.")
+                return redirect('login')  # Redireciona para a página de login se o usuário não estiver autenticado
         return _wrapped_view
     return decorator

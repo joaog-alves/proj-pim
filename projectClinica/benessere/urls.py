@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='benessere/login.html'), name='login'),
     path('login_redirect/', views.login_redirect, name='login_redirect'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('acesso-negado/', views.acesso_negado, name='acesso_negado'),
     
     path('recepcao/consultas/', views.recp_lista_consultas, name='recp_consultas'),
     path('recepcao/consultas/adicionar/', views.recp_adicionar_consulta, name='recp_adicionar_consulta'),  # Adicione a URL para adicionar consultas
