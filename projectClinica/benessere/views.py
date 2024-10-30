@@ -213,11 +213,6 @@ def med_consultas(request):
     return render(request, 'benessere/med_consultas.html', {'consultas': consultas})
 
 @group_required('Medico')
-def med_mensagens(request):
-    # Lógica para exibir as mensagens do médico
-    return render(request, 'benessere/med_mensagens.html')
-
-@group_required('Medico')
 def med_detalhes_consulta(request, consulta_id):
     consulta = get_object_or_404(Consulta, id=consulta_id)
     paciente = consulta.paciente
@@ -407,3 +402,26 @@ def gestor_deletar_unidade(request, unidade_id):
         return redirect('gestor_unidades')  # Redireciona para a lista de unidades após a exclusão
     
     return render(request, 'benessere/gestor_confirmar_deletar_unidade.html', {'unidade': unidade})
+
+@login_required
+def listar_mensagens(request):
+    mensagens_recebidas = Mensagem.objects.filter(destinatario=request.user).order_by('-timestamp')
+    mensagens_enviadas = Mensagem.objects.filter(remetente=request.user).order_by('-timestamp')
+    return render(request, 'benessere/listar_mensagens.html', {
+        'mensagens_recebidas': mensagens_recebidas,
+        'mensagens_enviadas': mensagens_enviadas
+    })
+
+@login_required
+def enviar_mensagem(request):
+    destinatarios = User.objects.exclude(id=request.user.id)  # Exclui o próprio usuário como destinatário
+    if request.method == 'POST':
+        form = MensagemForm(request.POST)
+        if form.is_valid():
+            mensagem = form.save(commit=False)
+            mensagem.remetente = request.user
+            mensagem.save()
+            return redirect('listar_mensagens')
+    else:
+        form = MensagemForm()
+    return render(request, 'benessere/enviar_mensagem.html', {'form': form, 'destinatarios': destinatarios})

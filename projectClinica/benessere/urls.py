@@ -38,7 +38,6 @@ urlpatterns = [
     path('gestor/unidades/deletar/<int:unidade_id>/', views.gestor_deletar_unidade, name='gestor_deletar_unidade'),  # Certifique-se que esta linha exista
   
     path('medico/consultas/', views.med_consultas, name='med_consultas'),
-    path('medico/mensagens/', views.med_mensagens, name='med_mensagens'),  
     path('medico/consultas/<int:consulta_id>/', views.med_detalhes_consulta, name='med_detalhes_consulta'),
     path('mensagens/', views.lista_mensagens, name='recp_mensagens'),
     path('medico/atendimento/<int:consulta_id>/', views.med_atendimento, name='med_atendimento'),
@@ -48,6 +47,9 @@ urlpatterns = [
     path('pagamentos/adicionar/', views.adicionar_pagamento, name='adicionar_pagamento'),
     path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
     path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
+
+    path('mensagens/', views.listar_mensagens, name='listar_mensagens'),
+    path('mensagens/enviar/', views.enviar_mensagem, name='enviar_mensagem'),
 ]
 
 if settings.DEBUG:

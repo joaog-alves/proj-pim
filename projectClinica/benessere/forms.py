@@ -153,3 +153,14 @@ class MedicacaoForm(forms.ModelForm):
     class Meta:
         model = Medicacao
         fields = ['nome', 'dosagem', 'instrucoes']
+
+class MensagemForm(forms.ModelForm):
+    destinatario = forms.ModelChoiceField(queryset=User.objects.filter(groups__name__in=['Medico', 'Recepcionista']))
+
+    class Meta:
+        model = Mensagem
+        fields = ['destinatario', 'texto']
+        labels = {
+            'destinatario': 'Destinatário',
+            'texto': 'Mensagem'
+        }

@@ -1,0 +1,35 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Mensagens Recebidas e Enviadas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mensagens Recebidas</h2>
+    <ul class="list-group">
+        {% for mensagem in mensagens_recebidas %}
+            <li class="list-group-item">
+                <strong>De:</strong> {{ mensagem.remetente.username }}<br>
+                <strong>Data:</strong> {{ mensagem.timestamp|date:"d/m/Y H:i" }}<br>
+                {{ mensagem.texto }}
+                <br>
+                <a href="{% url 'enviar_mensagem' %}?destinatario={{ mensagem.remetente.id }}" class="btn btn-link">Responder</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Nenhuma mensagem recebida.</li>
+        {% endfor %}
+    </ul>
+
+    <h2 class="mt-4">Mensagens Enviadas</h2>
+    <ul class="list-group">
+        {% for mensagem in mensagens_enviadas %}
+            <li class="list-group-item">
+                <strong>Para:</strong> {{ mensagem.destinatario.username }}<br>
+                <strong>Data:</strong> {{ mensagem.timestamp|date:"d/m/Y H:i" }}<br>
+                {{ mensagem.texto }}
+            </li>
+        {% empty %}
+            <li class="list-group-item">Nenhuma mensagem enviada.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'benessere/recp_base.html' %}
+
+{% block title %}Enviar Mensagem{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Enviar Mensagem</h2>
+    <form method="post" class="mx-auto" style="max-width: 400px;">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="destinatario">Destinatário:</label>
+            <select name="destinatario" id="destinatario" class="form-control" required>
+                {% for user in destinatarios %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="texto">Mensagem:</label>
+            <textarea name="texto" id="texto" rows="4" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Enviar</button>
+    </form>
+</div>
+{% endblock %}
