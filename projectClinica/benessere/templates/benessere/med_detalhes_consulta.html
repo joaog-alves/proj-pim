@@ -1,0 +1,15 @@
+{% extends 'benessere/med_base.html' %}
+
+{% block title %}Detalhes da Consulta - Benessere{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Detalhes da Consulta - {{ paciente.nome }}</h3>
+    <p><strong>Data:</strong> {{ consulta.data_hora|date:"d/m/Y H:i" }}</p>
+    <p><strong>Unidade Clínica:</strong> {{ consulta.unidade_clinica }}</p>
+    <p><strong>Observações:</strong> {{ consulta.observacoes }}</p>
+
+    <a href="{% url 'med_atendimento' consulta.id %}" class="btn btn-primary mt-3">Iniciar Atendimento</a>
+    <a href="{% url 'historico_consultas' paciente.id %}" class="btn btn-secondary mt-3">Ver Histórico do Paciente</a>
+</div>
+{% endblock %}

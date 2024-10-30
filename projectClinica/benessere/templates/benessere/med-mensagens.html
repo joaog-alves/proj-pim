@@ -1,15 +1,32 @@
-<!-- templates/benessere/med-mensagens.html -->
-{% extends 'benessere/med-base.html' %}
+{% extends 'benessere/med_base.html' %}
 
-{% block title %}Mensagens do Médico - Benessere{% endblock %}
+{% block title %}Prontuário de {{ prontuario.paciente.nome }}{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header text-center">
-        <h3>Mensagens</h3>
-    </div>
-    <div class="card-body">
-        <p class="text-center">Aqui serão exibidas as mensagens para o médico.</p>
-    </div>
+<div class="container mt-4">
+    <h2>Prontuário de {{ prontuario.paciente.nome }}</h2>
+    <p><strong>Histórico Médico:</strong></p>
+    <p>{{ prontuario.historico|default:"Nenhum histórico registrado." }}</p>
+    
+    <!-- Diagnósticos e Medicações -->
+    <h4 class="mt-4">Diagnósticos</h4>
+    <ul>
+        {% for diagnostico in prontuario.diagnosticos.all %}
+            <li>
+                <strong>Data:</strong> {{ diagnostico.data|date:"d/m/Y" }}<br>
+                <strong>Descrição:</strong> {{ diagnostico.descricao }}
+                <h5>Medicações:</h5>
+                <ul>
+                    {% for medicacao in diagnostico.medicacoes.all %}
+                        <li>{{ medicacao.nome }} - {{ medicacao.dosagem }}<br>{{ medicacao.instrucoes }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>Nenhum diagnóstico registrado.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'med_consultas' %}" class="btn btn-secondary mt-3">Voltar</a>
 </div>
 {% endblock %}

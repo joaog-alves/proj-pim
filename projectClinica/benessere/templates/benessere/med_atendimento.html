@@ -1,0 +1,31 @@
+{% extends 'benessere/med_base.html' %}
+
+{% block title %}Atendimento - {{ paciente.nome }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Atendimento - {{ paciente.nome }}</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="card mt-3">
+            <div class="card-header">Diagnóstico</div>
+            <div class="card-body">
+                {{ diagnostico_form.as_p }}
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">Medicação</div>
+            <div class="card-body">
+                {{ medicacao_form.as_p }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Salvar Atendimento</button>
+    </form>
+
+    <a href="{% url 'med_detalhes_consulta' consulta.id %}" class="btn btn-secondary mt-3">Voltar para Detalhes da Consulta</a>
+</div>
+{% endblock %}

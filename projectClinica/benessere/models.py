@@ -65,13 +65,14 @@ class Paciente(models.Model):
 
 class Consulta(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name='consultas')
     data_hora = models.DateTimeField()
     unidade_clinica = models.ForeignKey(UnidadeClinica, on_delete=models.CASCADE)
     observacoes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'Consulta com {self.medico.usuario.username} em {self.data_hora}'
+
 
 class Pagamento(models.Model):
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
@@ -97,3 +98,27 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Prontuario(models.Model):
+    paciente = models.OneToOneField(Paciente, on_delete=models.CASCADE, related_name="prontuario")
+    historico = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Prontuário de {self.paciente.nome}"
+
+class Diagnostico(models.Model):
+    consulta = models.OneToOneField('Consulta', on_delete=models.CASCADE, related_name='diagnostico')
+    descricao = models.TextField()
+    data = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Diagnóstico da consulta de {self.consulta.paciente.nome} em {self.data}"
+
+class Medicacao(models.Model):
+    diagnostico = models.ForeignKey(Diagnostico, on_delete=models.CASCADE, related_name='medicacoes')
+    nome = models.CharField(max_length=100)
+    dosagem = models.CharField(max_length=50)
+    instrucoes = models.TextField()
+
+    def __str__(self):
+        return f"{self.nome} - {self.dosagem}"

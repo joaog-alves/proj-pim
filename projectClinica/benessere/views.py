@@ -30,13 +30,22 @@ def acesso_negado(request):
         return redirect('login')  # Redireciona para o login se o usuário não estiver autenticado
     return render(request, 'benessere/acesso_negado.html')
 
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+
 @login_required
 def upload_user_photo(request):
-    if request.method == 'POST' and request.FILES.get('photo'):
-        photo = request.FILES['photo']
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        user_profile.photo = photo
-        user_profile.save()
+    if request.method == 'POST':
+        # Verifica se o campo de foto foi enviado
+        if 'photo' in request.FILES:
+            photo = request.FILES['photo']
+            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            user_profile.photo = photo
+            user_profile.save()
+        else:
+            # Cria ou obtém o perfil do usuário sem atualizar a foto
+            UserProfile.objects.get_or_create(user=request.user)
 
         # Redirecionamento baseado no grupo do usuário
         if request.user.groups.filter(name='Gestor').exists():
@@ -48,6 +57,7 @@ def upload_user_photo(request):
 
     # Redirecionamento padrão caso o método não seja POST
     return redirect('gestor_dashboard')
+
 
 @group_required("Recepcionista")
 def recp_lista_consultas(request):
@@ -200,23 +210,69 @@ def editar_pagamento(request, pagamento_id):
 def med_consultas(request):
     # Filtra as consultas apenas para o médico logado
     consultas = Consulta.objects.filter(medico__usuario=request.user)
-    return render(request, 'benessere/med-consultas.html', {'consultas': consultas})
+    return render(request, 'benessere/med_consultas.html', {'consultas': consultas})
 
 @group_required('Medico')
 def med_mensagens(request):
     # Lógica para exibir as mensagens do médico
-    return render(request, 'benessere/med-mensagens.html')
+    return render(request, 'benessere/med_mensagens.html')
 
 @group_required('Medico')
 def med_detalhes_consulta(request, consulta_id):
-    consulta = get_object_or_404(Consulta, pk=consulta_id)
-    
-    # Verifica se o check-in já foi realizado para essa consulta
-    checkin_exists = CheckIn.objects.filter(consulta=consulta).exists()
+    consulta = get_object_or_404(Consulta, id=consulta_id)
+    paciente = consulta.paciente
 
-    return render(request, 'benessere/med-detalhes-consulta.html', {
+    return render(request, 'benessere/med_detalhes_consulta.html', {
         'consulta': consulta,
-        'checkin_exists': checkin_exists
+        'paciente': paciente
+    })
+
+def med_atendimento(request, consulta_id):
+    consulta = get_object_or_404(Consulta, id=consulta_id)
+    paciente = consulta.paciente
+
+    # Obtém ou cria o diagnóstico para a consulta específica
+    diagnostico, created = Diagnostico.objects.get_or_create(consulta=consulta)
+
+    if request.method == 'POST':
+        diagnostico_form = DiagnosticoForm(request.POST, instance=diagnostico)
+        medicacao_form = MedicacaoForm(request.POST)
+
+        if diagnostico_form.is_valid():
+            diagnostico = diagnostico_form.save()
+
+            if medicacao_form.is_valid():
+                medicacao = medicacao_form.save(commit=False)
+                medicacao.diagnostico = diagnostico
+                medicacao.save()
+
+            return redirect('historico_consultas', paciente_id=paciente.id)
+
+    else:
+        diagnostico_form = DiagnosticoForm(instance=diagnostico)
+        medicacao_form = MedicacaoForm()
+
+    return render(request, 'benessere/med_atendimento.html', {
+        'consulta': consulta,
+        'paciente': paciente,
+        'diagnostico_form': diagnostico_form,
+        'medicacao_form': medicacao_form
+    })
+
+@group_required('Medico')
+def med_historico_paciente(request, paciente_id):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+    consultas = paciente.consultas.all()  # Acessa todas as consultas do paciente
+    return render(request, 'benessere/med_historico_paciente.html', {'paciente': paciente, 'consultas': consultas})
+
+@group_required('Medico')  # Use o decorador de grupo, se aplicável
+def historico_consultas(request, paciente_id):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+    consultas = paciente.consultas.all()  # Assumindo que `related_name='consultas'` está configurado
+    
+    return render(request, 'benessere/med_historico_consultas.html', {
+        'paciente': paciente,
+        'consultas': consultas
     })
 
 @group_required('Gestor')

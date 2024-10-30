@@ -34,10 +34,14 @@ class CustomUserCreationForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()
-        # Cria o perfil do usuário e salva a foto
-        if self.cleaned_data['photo']:
+        # Verifica se a foto foi fornecida antes de criar o perfil do usuário
+        if self.cleaned_data.get('photo'):
             UserProfile.objects.create(user=user, photo=self.cleaned_data['photo'])
+        else:
+            # Cria o perfil sem a foto, se necessário
+            UserProfile.objects.get_or_create(user=user)
         return user
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -139,3 +143,13 @@ class UnidadeClinicaForm(forms.ModelForm):
         if commit:
             unidade_clinica.save()
         return unidade_clinica
+
+class DiagnosticoForm(forms.ModelForm):
+    class Meta:
+        model = Diagnostico
+        fields = ['descricao']
+
+class MedicacaoForm(forms.ModelForm):
+    class Meta:
+        model = Medicacao
+        fields = ['nome', 'dosagem', 'instrucoes']
