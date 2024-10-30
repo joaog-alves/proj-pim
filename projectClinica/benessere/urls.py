@@ -26,7 +26,8 @@ urlpatterns = [
     path('recepcao/pacientes/adicionar/', views.recp_adicionar_paciente, name='recp_adicionar_paciente'),
     path('recepcao/pacientes/<int:paciente_id>/', views.recp_detalhes_paciente, name='recp_detalhes_paciente'),
     path('recepcao/pacientes/<int:paciente_id>/editar/', views.recp_editar_paciente, name='recp_editar_paciente'),  # URL para editar paciente
-   
+    path('recepcao/mensagens/', views.recp_mensagens, name='recp_mensagens'),
+
     path('gestor/dashboard/', views.gestor_dashboard, name='gestor_dashboard'),
     path('gestor/usuarios/criar/', views.gestor_criar_usuario, name='gestor_criar_usuario'),
     path('gestor/usuarios/editar/<int:user_id>/', views.gestor_editar_usuario, name='gestor_editar_usuario'),
@@ -39,18 +40,11 @@ urlpatterns = [
   
     path('medico/consultas/', views.med_consultas, name='med_consultas'),
     path('medico/consultas/<int:consulta_id>/', views.med_detalhes_consulta, name='med_detalhes_consulta'),
-    path('mensagens/', views.lista_mensagens, name='recp_mensagens'),
     path('medico/atendimento/<int:consulta_id>/', views.med_atendimento, name='med_atendimento'),
     path('medico/historico/<int:paciente_id>/', views.historico_consultas, name='historico_consultas'),
 
-    path('pagamentos/', views.lista_pagamentos, name='lista_pagamentos'),
-    path('pagamentos/adicionar/', views.adicionar_pagamento, name='adicionar_pagamento'),
-    path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
-    path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
-
-    path('mensagens/', views.listar_mensagens, name='listar_mensagens'),
-    path('mensagens/enviar/', views.enviar_mensagem, name='enviar_mensagem'),
+    path('recepcao/pagamentos/adicionar/', views.recp_adicionar_pagamento, name='recp_adicionar_pagamento'),
+    path('recepcao/pagamentos/', views.recp_pagamento, name='recp_pagamento'),  # Rota para listar pagamentos
+    path('recp_pagamentos/<int:pagamento_id>/', views.recp_detalhes_pagamento, name='recp_detalhes_pagamento'),
+    path('recp_pagamentos/<int:pagamento_id>/editar/', views.recp_editar_pagamento, name='recp_editar_pagamento'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

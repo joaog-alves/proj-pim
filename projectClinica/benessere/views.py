@@ -137,11 +137,6 @@ def recp_lista_pacientes(request):
     pacientes = Paciente.objects.all()
     return render(request, 'benessere/recp_pacientes.html', {'pacientes': pacientes})
 
-def lista_mensagens(request):
-    # Aqui você pode adicionar a lógica para buscar mensagens
-    mensagens = []  # Exemplo: substitua pelo queryset real, se houver
-    return render(request, 'benessere/recp_mensagens.html', {'mensagens': mensagens})
-
 @group_required("Recepcionista")
 def recp_detalhes_paciente(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
@@ -175,36 +170,40 @@ def recp_editar_paciente(request, paciente_id):
         form = PacienteForm(instance=paciente)
     return render(request, 'benessere/recp_editar_paciente.html', {'form': form, 'paciente': paciente})
 
-def lista_pagamentos(request):
+def recp_pagamento(request):
     pagamentos = Pagamento.objects.all()
     return render(request, 'benessere/recp_pagamento.html', {'pagamentos': pagamentos})
 
-def detalhes_pagamento(request, pagamento_id):
+def recp_detalhes_pagamento(request, pagamento_id):
     pagamento = get_object_or_404(Pagamento, id=pagamento_id)
     return render(request, 'benessere/recp_visualizar_pagamento.html', {'pagamento': pagamento})
 
-def adicionar_pagamento(request):
+def recp_adicionar_pagamento(request):
     if request.method == 'POST':
         form = PagamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Pagamento adicionado com sucesso.')
-            return redirect('lista_pagamentos')
+            return redirect('recp_pagamento')
     else:
         form = PagamentoForm()
     return render(request, 'benessere/recp_adicionar_pagamento.html', {'form': form})
 
-def editar_pagamento(request, pagamento_id):
+
+def recp_editar_pagamento(request, pagamento_id):
     pagamento = get_object_or_404(Pagamento, id=pagamento_id)
     if request.method == 'POST':
         form = PagamentoForm(request.POST, instance=pagamento)
         if form.is_valid():
             form.save()
             messages.success(request, 'Pagamento atualizado com sucesso.')
-            return redirect('detalhes_pagamento', pagamento_id=pagamento.id)
+            return redirect('recp_detalhes_pagamento', pagamento_id=pagamento.id)
     else:
         form = PagamentoForm(instance=pagamento)
     return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
+
+def recp_mensagens(request):
+    # Lógica para exibir as mensagens para a recepção
+    return render(request, 'benessere/recp_mensagens.html')
 
 @group_required('Medico')
 def med_consultas(request):
@@ -402,26 +401,3 @@ def gestor_deletar_unidade(request, unidade_id):
         return redirect('gestor_unidades')  # Redireciona para a lista de unidades após a exclusão
     
     return render(request, 'benessere/gestor_confirmar_deletar_unidade.html', {'unidade': unidade})
-
-@login_required
-def listar_mensagens(request):
-    mensagens_recebidas = Mensagem.objects.filter(destinatario=request.user).order_by('-timestamp')
-    mensagens_enviadas = Mensagem.objects.filter(remetente=request.user).order_by('-timestamp')
-    return render(request, 'benessere/listar_mensagens.html', {
-        'mensagens_recebidas': mensagens_recebidas,
-        'mensagens_enviadas': mensagens_enviadas
-    })
-
-@login_required
-def enviar_mensagem(request):
-    destinatarios = User.objects.exclude(id=request.user.id)  # Exclui o próprio usuário como destinatário
-    if request.method == 'POST':
-        form = MensagemForm(request.POST)
-        if form.is_valid():
-            mensagem = form.save(commit=False)
-            mensagem.remetente = request.user
-            mensagem.save()
-            return redirect('listar_mensagens')
-    else:
-        form = MensagemForm()
-    return render(request, 'benessere/enviar_mensagem.html', {'form': form, 'destinatarios': destinatarios})

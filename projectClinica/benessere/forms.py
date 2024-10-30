@@ -89,12 +89,15 @@ class PacienteForm(forms.ModelForm):
         }
 
 class PagamentoForm(forms.ModelForm):
+    data_pagamento = forms.DateField(
+        widget=forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+        input_formats=['%Y-%m-%d']
+    )
+
     class Meta:
         model = Pagamento
         fields = ['paciente', 'consulta', 'valor', 'data_pagamento']
-        widgets = {
-            'data_pagamento': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        }
+
 
 class UnidadeClinicaForm(forms.ModelForm):
     # Campo para digitar o nome da cidade manualmente
@@ -154,13 +157,3 @@ class MedicacaoForm(forms.ModelForm):
         model = Medicacao
         fields = ['nome', 'dosagem', 'instrucoes']
 
-class MensagemForm(forms.ModelForm):
-    destinatario = forms.ModelChoiceField(queryset=User.objects.filter(groups__name__in=['Medico', 'Recepcionista']))
-
-    class Meta:
-        model = Mensagem
-        fields = ['destinatario', 'texto']
-        labels = {
-            'destinatario': 'Destinatário',
-            'texto': 'Mensagem'
-        }

@@ -1,8 +1,8 @@
 {% extends 'benessere/recp_base.html' %}
 {% block content %}
   <h1>Pagamentos</h1>
-  <a href="{% url 'adicionar_pagamento' %}" class="btn btn-primary">Adicionar Pagamento</a>
-  <table>
+  <a href="{% url 'recp_adicionar_pagamento' %}" class="btn btn-primary">Adicionar Pagamento</a>
+  <table class="table table-bordered">
     <tr>
       <th>Paciente</th>
       <th>Consulta</th>
@@ -14,11 +14,11 @@
     <tr>
       <td>{{ pagamento.paciente.nome }}</td>
       <td>{{ pagamento.consulta }}</td>
-      <td>{{ pagamento.valor }}</td>
+      <td>R$ {{ pagamento.valor }}</td>
       <td>{{ pagamento.data_pagamento }}</td>
       <td>
-        <a href="{% url 'detalhes_pagamento' pagamento.id %}">Detalhes</a>
-        <a href="{% url 'editar_pagamento' pagamento.id %}">Editar</a>
+        <a href="{% url 'recp_detalhes_pagamento' pagamento.id %}">Detalhes</a>
+        <a href="{% url 'recp_editar_pagamento' pagamento.id %}">Editar</a>
       </td>
     </tr>
     {% endfor %}

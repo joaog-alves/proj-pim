@@ -7,6 +7,6 @@
   <p><strong>Valor:</strong> {{ pagamento.valor }}</p>
   <p><strong>Data do Pagamento:</strong> {{ pagamento.data_pagamento }}</p>
 
-  <a href="{% url 'editar_pagamento' pagamento.id %}" class="btn btn-primary">Editar</a>
-  <a href="{% url 'lista_pagamentos' %}" class="btn btn-secondary">Voltar</a>
+  <a href="{% url 'recp_editar_pagamento' pagamento.id %}" class="btn btn-primary">Editar</a>
+  <a href="{% url 'recp_pagamento' %}" class="btn btn-secondary">Voltar</a>
 {% endblock %}
