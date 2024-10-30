@@ -97,3 +97,12 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Mensagem(models.Model):
+    remetente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_enviadas')
+    destinatario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mensagens_recebidas')
+    texto = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Mensagem de {self.remetente} para {self.destinatario} - {self.timestamp.strftime("%Y-%m-%d %H:%M")}'

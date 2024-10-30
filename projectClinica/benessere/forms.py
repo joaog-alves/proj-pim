@@ -139,3 +139,15 @@ class UnidadeClinicaForm(forms.ModelForm):
         if commit:
             unidade_clinica.save()
         return unidade_clinica
+
+
+class MensagemForm(forms.ModelForm):
+    destinatario = forms.ModelChoiceField(queryset=User.objects.filter(groups__name__in=['Medico', 'Recepcionista']))
+
+    class Meta:
+        model = Mensagem
+        fields = ['destinatario', 'texto']
+        labels = {
+            'destinatario': 'Destinatário',
+            'texto': 'Mensagem'
+        }

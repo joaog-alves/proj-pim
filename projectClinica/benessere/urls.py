@@ -15,6 +15,11 @@ urlpatterns = [
     path('acesso-negado/', views.acesso_negado, name='acesso_negado'),
     path('upload_photo/', views.upload_user_photo, name='upload_user_photo'),
     
+    
+    path('mensagens/', views.listar_mensagens, name='listar_mensagens'),
+    path('mensagens/enviar/', views.enviar_mensagem, name='enviar_mensagem'),
+    path('medico/mensagens/', views.med_mensagens, name='med_mensagens'),
+    
     path('recepcao/consultas/', views.recp_lista_consultas, name='recp_consultas'),
     path('recepcao/consultas/adicionar/', views.recp_adicionar_consulta, name='recp_adicionar_consulta'),  # Adicione a URL para adicionar consultas
     path('recepcao/consultas/<int:consulta_id>/', views.recp_detalhes_consulta, name='recp_detalhes_consulta'),  # Altere para consulta_id

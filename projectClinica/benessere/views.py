@@ -10,6 +10,9 @@ from .models import UserProfile
 
 
 
+
+
+
 @login_required
 def login_redirect(request):
     user = request.user
@@ -48,6 +51,29 @@ def upload_user_photo(request):
 
     # Redirecionamento padrão caso o método não seja POST
     return redirect('gestor_dashboard')
+
+@login_required
+def listar_mensagens(request):
+    mensagens_recebidas = Mensagem.objects.filter(destinatario=request.user).order_by('-timestamp')
+    mensagens_enviadas = Mensagem.objects.filter(remetente=request.user).order_by('-timestamp')
+    return render(request, 'benessere/listar_mensagens.html', {
+        'mensagens_recebidas': mensagens_recebidas,
+        'mensagens_enviadas': mensagens_enviadas
+    })
+
+@login_required
+def enviar_mensagem(request):
+    destinatarios = User.objects.exclude(id=request.user.id)  # Exclui o próprio usuário como destinatário
+    if request.method == 'POST':
+        form = MensagemForm(request.POST)
+        if form.is_valid():
+            mensagem = form.save(commit=False)
+            mensagem.remetente = request.user
+            mensagem.save()
+            return redirect('listar_mensagens')
+    else:
+        form = MensagemForm()
+    return render(request, 'benessere/enviar_mensagem.html', {'form': form, 'destinatarios': destinatarios})
 
 @group_required("Recepcionista")
 def recp_lista_consultas(request):
