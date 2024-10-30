@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import group_required
 from django.contrib.auth.models import User, Group
+from .models import UserProfile
 
 
 
@@ -28,6 +29,25 @@ def acesso_negado(request):
     if not request.user.is_authenticated:
         return redirect('login')  # Redireciona para o login se o usuário não estiver autenticado
     return render(request, 'benessere/acesso_negado.html')
+
+@login_required
+def upload_user_photo(request):
+    if request.method == 'POST' and request.FILES.get('photo'):
+        photo = request.FILES['photo']
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_profile.photo = photo
+        user_profile.save()
+
+        # Redirecionamento baseado no grupo do usuário
+        if request.user.groups.filter(name='Gestor').exists():
+            return redirect('gestor_dashboard')
+        elif request.user.groups.filter(name='Medico').exists():
+            return redirect('med_consultas')
+        elif request.user.groups.filter(name='Recepcionista').exists():
+            return redirect('recp_consultas')
+
+    # Redirecionamento padrão caso o método não seja POST
+    return redirect('gestor_dashboard')
 
 @group_required("Recepcionista")
 def recp_lista_consultas(request):

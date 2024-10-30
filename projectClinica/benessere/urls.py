@@ -3,6 +3,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -11,6 +13,7 @@ urlpatterns = [
     path('login_redirect/', views.login_redirect, name='login_redirect'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('acesso-negado/', views.acesso_negado, name='acesso_negado'),
+    path('upload_photo/', views.upload_user_photo, name='upload_user_photo'),
     
     path('recepcao/consultas/', views.recp_lista_consultas, name='recp_consultas'),
     path('recepcao/consultas/adicionar/', views.recp_adicionar_consulta, name='recp_adicionar_consulta'),  # Adicione a URL para adicionar consultas
@@ -45,3 +48,6 @@ urlpatterns = [
     path('pagamentos/<int:pagamento_id>/', views.detalhes_pagamento, name='detalhes_pagamento'),
     path('pagamentos/<int:pagamento_id>/editar/', views.editar_pagamento, name='editar_pagamento'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -64,4 +64,30 @@
         </div>
     </div>
 </div>
+
+<!-- Script para controle de exibição condicional dos campos -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleciona todos os checkboxes de grupo e os campos específicos para médicos
+        const groupCheckboxes = document.querySelectorAll('.groups-checkbox input');
+        const medicoFields = document.querySelectorAll('.medico-field');
+
+        // Função para atualizar a exibição dos campos
+        function updateMedicoFields() {
+            // Verifica se algum dos checkboxes possui o valor "Medico" e está selecionado
+            const isMedicoChecked = Array.from(groupCheckboxes).some(cb => cb.checked && cb.labels[0].innerText === "Medico");
+            medicoFields.forEach(field => {
+                field.style.display = isMedicoChecked ? 'block' : 'none';
+            });
+        }
+
+        // Adiciona o evento 'change' a cada checkbox de grupo
+        groupCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateMedicoFields);
+        });
+
+        // Chama a função uma vez ao carregar a página para ajustar os campos iniciais
+        updateMedicoFields();
+    });
+</script>
 {% endblock %}

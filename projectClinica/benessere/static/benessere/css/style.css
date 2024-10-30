@@ -245,3 +245,15 @@ form .btn-container {
     padding-left: 20px;
     padding-right: 20px;
 }
+
+/* Ajusta o alinhamento das caixas de seleção do grupo */
+.groups-checkbox label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Espaçamento entre o checkbox e o texto */
+}
+
+/* Oculta inicialmente os campos específicos para médicos */
+.medico-field {
+    display: none;
+}

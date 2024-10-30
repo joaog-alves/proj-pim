@@ -8,7 +8,7 @@ class CustomUserCreationForm(UserCreationForm):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.filter(name__in=["Medico", "Gestor", "Recepcionista"]),
         required=True,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'groups-checkbox'}),
         label='Grupos'
     )
 
@@ -16,13 +16,28 @@ class CustomUserCreationForm(UserCreationForm):
     especialidade = forms.ModelChoiceField(
         queryset=Especialidade.objects.all(),
         required=False,
-        label='Especialidade'
+        label='Especialidade',
+        widget=forms.Select(attrs={'class': 'medico-field'})
     )
-    crm = forms.CharField(max_length=20, required=False, label='CRM')
+    crm = forms.CharField(
+        max_length=20,
+        required=False,
+        label='CRM',
+        widget=forms.TextInput(attrs={'class': 'medico-field'})
+    )
 
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2', 'groups', 'especialidade', 'crm']
+        
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        # Cria o perfil do usuário e salva a foto
+        if self.cleaned_data['photo']:
+            UserProfile.objects.create(user=user, photo=self.cleaned_data['photo'])
+        return user
 
     def clean(self):
         cleaned_data = super().clean()

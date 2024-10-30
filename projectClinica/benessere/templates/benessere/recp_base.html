@@ -34,8 +34,19 @@
         </li>
     </ul>
     <div class="sidebar-user-info d-flex flex-column align-items-center" id="foto-nome">
-        <img src="{% static 'benessere/img/user.jpg' %}" alt="User Photo" class="user-photo">
-        <h5 class="user-name">Nome do Usuário</h5>
+        <!-- Formulário para upload da foto -->
+        <form method="post" enctype="multipart/form-data" id="uploadPhotoFormRecp" action="{% url 'upload_user_photo' %}">
+            {% csrf_token %}
+            <label for="photoInputRecp" style="cursor: pointer;">
+                {% if user.userprofile.photo %}
+                    <img src="{{ user.userprofile.photo.url }}" alt="User Photo" class="user-photo" id="userPhotoRecp">
+                {% else %}
+                    <img src="{% static 'benessere/img/user.jpg' %}" alt="User Photo" class="user-photo" id="userPhotoRecp">
+                {% endif %}
+            </label>
+            <input type="file" id="photoInputRecp" name="photo" accept="image/*" style="display: none;" onchange="document.getElementById('uploadPhotoFormRecp').submit();">
+        </form>
+        <h5 class="user-name">{{ user.username }}</h5>
     </div>
 </div>
 

@@ -90,3 +90,10 @@ class CheckIn(models.Model):
 
     def __str__(self):
         return f'Check-in de {self.consulta.paciente.nome} para consulta em {self.data}'
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)  # Campo para foto de perfil
+
+    def __str__(self):
+        return self.user.username
