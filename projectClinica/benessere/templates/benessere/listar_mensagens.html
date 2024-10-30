@@ -1,0 +1,24 @@
+{% extends base_template %}
+
+{% block content %}
+<h2>Mensagens Recebidas</h2>
+<table class="table">
+    <tr>
+        <th>Remetente</th>
+        <th>Data</th>
+        <th>Texto</th>
+        <th>Ações</th>
+    </tr>
+    {% for mensagem in mensagens %}
+    <tr>
+        <td>{{ mensagem.remetente.username }}</td>
+        <td>{{ mensagem.data_hora|date:"d/m/Y H:i" }}</td>
+        <td>{{ mensagem.texto|truncatewords:10 }}</td>
+        <td><a href="{% url 'ver_mensagem' mensagem.id %}">Ver</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Nenhuma mensagem encontrada.</td></tr>
+    {% endfor %}
+</table>
+<a href="{% url 'enviar_mensagem' %}" class="btn btn-primary">Enviar Mensagem</a>
+{% endblock %}

@@ -157,3 +157,12 @@ class MedicacaoForm(forms.ModelForm):
         model = Medicacao
         fields = ['nome', 'dosagem', 'instrucoes']
 
+class MensagemForm(forms.ModelForm):
+    class Meta:
+        model = Mensagem
+        fields = ['destinatario', 'texto']
+        labels = {
+            'destinatario': 'Destinatário',
+            'texto': 'Mensagem',
+        }
+

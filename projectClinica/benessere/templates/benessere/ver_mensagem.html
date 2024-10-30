@@ -1,0 +1,19 @@
+{% extends base_template %}
+
+{% block title %}Visualizar Mensagem{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mensagem de {{ mensagem.remetente.username }}</h2>
+    <p><strong>Destinatário:</strong> {{ mensagem.destinatario.username }}</p>
+    <p><strong>Data e Hora:</strong> {{ mensagem.data_hora|date:"d/m/Y H:i" }}</p>
+    <p><strong>Conteúdo:</strong></p>
+    <p>{{ mensagem.texto }}</p>
+
+    <!-- Botão de Voltar -->
+    <a href="{% url 'listar_mensagens' %}" class="btn btn-secondary mt-3">Voltar</a>
+    
+    <!-- Botão de Responder -->
+    <a href="{% url 'enviar_mensagem' mensagem.remetente.id %}" class="btn btn-primary mt-3">Responder</a>
+</div>
+{% endblock %}

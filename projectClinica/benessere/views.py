@@ -201,10 +201,6 @@ def recp_editar_pagamento(request, pagamento_id):
         form = PagamentoForm(instance=pagamento)
     return render(request, 'benessere/recp_editar_pagamento.html', {'form': form, 'pagamento': pagamento})
 
-def recp_mensagens(request):
-    # Lógica para exibir as mensagens para a recepção
-    return render(request, 'benessere/recp_mensagens.html')
-
 @group_required('Medico')
 def med_consultas(request):
     # Filtra as consultas apenas para o médico logado
@@ -401,3 +397,47 @@ def gestor_deletar_unidade(request, unidade_id):
         return redirect('gestor_unidades')  # Redireciona para a lista de unidades após a exclusão
     
     return render(request, 'benessere/gestor_confirmar_deletar_unidade.html', {'unidade': unidade})
+
+@login_required
+def listar_mensagens(request):
+    mensagens_recebidas = Mensagem.objects.filter(destinatario=request.user)
+    base_template = determinar_base_template(request.user)
+    return render(request, 'benessere/listar_mensagens.html', {
+        'mensagens': mensagens_recebidas,
+        'base_template': base_template
+    })
+
+@login_required
+def enviar_mensagem(request):
+    if request.method == 'POST':
+        form = MensagemForm(request.POST)
+        if form.is_valid():
+            mensagem = form.save(commit=False)
+            mensagem.remetente = request.user
+            mensagem.save()
+            return redirect('listar_mensagens')
+    else:
+        form = MensagemForm()
+    base_template = determinar_base_template(request.user)
+    return render(request, 'benessere/enviar_mensagem.html', {
+        'form': form,
+        'base_template': base_template
+    })
+
+@login_required
+def ver_mensagem(request, mensagem_id):
+    mensagem = get_object_or_404(Mensagem, id=mensagem_id, destinatario=request.user)
+    base_template = determinar_base_template(request.user)
+    return render(request, 'benessere/ver_mensagem.html', {
+        'mensagem': mensagem,
+        'base_template': base_template
+    })
+
+def determinar_base_template(usuario):
+    if usuario.groups.filter(name='Gestor').exists():
+        return 'benessere/gestor_base.html'
+    elif usuario.groups.filter(name='Medico').exists():
+        return 'benessere/med_base.html'
+    elif usuario.groups.filter(name='Recepcionista').exists():
+        return 'benessere/recp_base.html'
+    return 'benessere/login.html'  # Base padrão, se necessário

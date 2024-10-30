@@ -122,3 +122,12 @@ class Medicacao(models.Model):
 
     def __str__(self):
         return f"{self.nome} - {self.dosagem}"
+
+class Mensagem(models.Model):
+    remetente = models.ForeignKey(User, related_name='mensagens_enviadas', on_delete=models.CASCADE)
+    destinatario = models.ForeignKey(User, related_name='mensagens_recebidas', on_delete=models.CASCADE)
+    texto = models.TextField()
+    data_hora = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Mensagem de {self.remetente.username} para {self.destinatario.username} em {self.data_hora}"
