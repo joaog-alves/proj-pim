@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from .decorators import group_required
 from django.contrib.auth.models import User, Group
 from .models import UserProfile
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
 
 
 
@@ -30,9 +33,6 @@ def acesso_negado(request):
         return redirect('login')  # Redireciona para o login se o usuário não estiver autenticado
     return render(request, 'benessere/acesso_negado.html')
 
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-from .models import UserProfile
 
 @login_required
 def upload_user_photo(request):

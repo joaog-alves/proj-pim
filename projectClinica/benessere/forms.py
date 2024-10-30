@@ -5,6 +5,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True, label="Email")  # Adiciona o campo de email
+
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.filter(name__in=["Medico", "Gestor", "Recepcionista"]),
         required=True,
@@ -28,10 +30,11 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2', 'groups', 'especialidade', 'crm']
-        
+        fields = ['username', 'email', 'password1', 'password2', 'groups', 'especialidade', 'crm']
+    
     def save(self, commit=True):
         user = super().save(commit=False)
+        user.email = self.cleaned_data['email']  # Salva o campo de email
         if commit:
             user.save()
         # Verifica se a foto foi fornecida antes de criar o perfil do usuário

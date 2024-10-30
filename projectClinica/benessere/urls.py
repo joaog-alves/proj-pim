@@ -48,6 +48,7 @@ urlpatterns = [
 
     path('mensagens/', views.listar_mensagens, name='listar_mensagens'),
     path('mensagens/enviar/', views.enviar_mensagem, name='enviar_mensagem'),
+    path('mensagens/enviar/<int:id>/', views.enviar_mensagem, name='enviar_mensagem'),
     path('mensagens/<int:mensagem_id>/', views.ver_mensagem, name='ver_mensagem'),
 
 ]
